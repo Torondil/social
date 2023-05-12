@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './styles/App.css';
 import PostList from './components/PostList';
+import MyButton from './components/UI/button/MyButton';
+import MyInput from './components/UI/input/MyInput';
+import { useRef } from 'react';
 
 function App() {
   const [posts, setPosts] = useState([
@@ -9,16 +12,35 @@ function App() {
     {id:3, title: 'Javascript3', body: 'Description3'},
   ])
 
-  const [posts2, setPosts2] = useState([
-    {id:1, title: 'Python', body: 'Description'},
-    {id:2, title: 'Python2', body: 'Description2'},
-    {id:3, title: 'Python3', body: 'Description3'},
-  ])
+  const [title, setTitle] = useState('')
+  const bodyInputRef = useRef();
+
+  const addNewPost = (e) => {
+    e.preventDefault()
+    console.log(title)
+    console.log(bodyInputRef.current.value)
+  }
 
   return (
-    <div>
+    <div className='App'>
+      <form>
+        {/* управляемый компонент */}
+        <MyInput 
+          value = {title}
+          onChange = {event => setTitle(event.target.value)}
+          type='text'
+          placeholder='Название'
+        />
+        {/* неуправляемый компонент */}
+        <MyInput 
+          ref={bodyInputRef}
+          type='text'
+          placeholder='Описание'
+        />
+        <MyButton onClick={addNewPost}>Создать пост</MyButton>
+
+      </form>
       <PostList posts={posts} title="Посты про JS"/>
-      <PostList posts={posts2} title="Посты про Python"/>
     </div>
   );
 }
