@@ -1,12 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import './styles/App.css';
 import PostList from './components/PostList';
-import MyButton from './components/UI/button/MyButton';
-import MyInput from './components/UI/input/MyInput';
-import { useRef } from 'react';
 import PostForm from './components/PostForm';
-import MySelect from './components/UI/select/MySelect';
 import PostFilter from './components/PostFilter';
+import MyModal from './components/UI/MyModal/MyModal';
+import MyButton from './components/UI/button/MyButton';
 
 function App() {
   const [posts, setPosts] = useState([
@@ -16,6 +14,8 @@ function App() {
   ])
 
 const [filter, setFilter] = useState({sort: '', query: ''})
+
+const [modal, setModal] = useState(false)
 
   const sortedPosts = useMemo(() => {
     console.log('Отработала ф сортет пост')
@@ -31,6 +31,7 @@ const [filter, setFilter] = useState({sort: '', query: ''})
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
+    setModal(false)
   }
  
   // Получаем пост из дочернего компонента
@@ -40,7 +41,12 @@ const [filter, setFilter] = useState({sort: '', query: ''})
 
   return (
     <div className='App'>
-      <PostForm create={createPost} />
+      <MyButton style={{marginTop: 30}} onClick={() => setModal(true)}>
+        Создать пользователя
+      </MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost} />
+      </MyModal>
       <hr style={{margin: '15px 0'}}></hr>
       <PostFilter filter={filter} setFilter={setFilter}/>
       <PostList remove={removePost} posts={sortedAndSearchedPosts} title="Посты про JS"/>
