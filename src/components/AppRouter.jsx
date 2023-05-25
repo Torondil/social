@@ -1,43 +1,47 @@
-// import React from 'react'
-// import { Navigate, Route, Routes } from 'react-router-dom'
-// import About from '../pages/About'
-// import Posts from '../pages/Posts'
-// import Error from '../pages/Error'
-// import PostIdPage from '../pages/PostIdPage'
-
-// const AppRouter = () => {
-//   return (
-//     <Routes>
-//         <Route path='/about' element={<About />} />
-//         <Route path='/posts' element={<Posts />} />
-//         <Route path='/posts/:id' element={<PostIdPage />} />
-//         <Route path="/error" element={<Error />} />
-//         <Route path="/*" element={<Navigate to="/error" replace />} />
-//     </Routes>
-//   )
-// }
-
-// export default AppRouter
-
-import React from 'react'
+import React, { useContext } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { routes } from '../router/routes'
+import { publicRoutes, privateRoutes } from '../router/routes'
+import { AuthContext } from '../context/context'
+import Loader from './UI/Loader/Loader'
 
 const AppRouter = () => {
+  const {isAuth, isLoading} = useContext(AuthContext)
+  console.log(isAuth)
+
+  if (isLoading) {
+    return <Loader/>
+  }
+  
   return (
+    isAuth ?
     <Routes>
-        {routes.map((route, index) => {
-          return (
-          <Route
-            key = {index}
-            path = {route.path}
-            element = {<route.element/>}
-           />
-          )
-        })
-        }
-        <Route path="/*" element={<Navigate to="/error" replace/>} />
-        
+    {privateRoutes.map((route) => {
+      return (
+      <Route
+        key = {route.path}
+        path = {route.path}
+        element = {<route.element/>}
+       />
+      )
+    })
+    }
+    <Route path="/*" element={<Navigate to="/posts" replace/>} />
+    </Routes>
+
+    :
+    
+    <Routes>
+      {publicRoutes.map((route) => {
+        return (
+        <Route
+          key = {route.path}
+          path = {route.path}
+          element = {<route.element/>}
+         />
+        )
+      })
+      }
+    <Route path="/*" element={<Navigate to="/login" replace/>} />
     </Routes>
   )
 }
